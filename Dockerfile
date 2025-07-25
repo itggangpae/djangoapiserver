@@ -1,12 +1,15 @@
 FROM python:3.8-slim-buster as build
 
-RUN apt-get update && apt-get install -y build-essential python3-dev
+
 
 WORKDIR /usr/src/app
 
 COPY requirements.txt ./
 
-RUN pip install -r requirements
+RUN pip install django
+
+RUN pip install djangorestframework
+
 
 COPY . .
 
