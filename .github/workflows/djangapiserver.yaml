@@ -55,7 +55,7 @@ jobs:
               echo "컨테이너 없음"
             fi
 
-            docker run --name djangoapiserver -d -p 80:80 --rm ggnagpae1/apiserver
+            docker run --name djangoapiserver -d -p 80:80 --rm ggnagpae1/djangoapiserver
           EOF
 
       
