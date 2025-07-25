@@ -50,7 +50,7 @@ jobs:
             if [ "$(docker ps -a -q -f name=^/djangoapiserver)" ]; then
               echo "컨테이너 있음"
               docker stop djangoapiserver
-              docker rmi ggnagpae1/apiserver
+              docker rmi ggnagpae1/djangoapiserver
             else
               echo "컨테이너 없음"
             fi
