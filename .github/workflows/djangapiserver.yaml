@@ -47,6 +47,12 @@ jobs:
       - name: SSH into EC2 and run commands
         run: |
           ssh -o StrictHostKeyChecking=no -i ec2-key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /home/ubuntu
-            mkdir update
+            if [ "$(docker ps -a -q -f name=^/djangoapiserver)" ]; then
+              docker stop djangoapiserver
+              docker rmi ggnagpae1/djangoapiserver
+            else
+              echo "컨테이너 없음: $CONTAINER_NAME"
+            fi
+
+            sudo docker run --name djangoapiserver -p 80:80 -d --rm ggnagpae1/djangoapiserver 
           EOF
