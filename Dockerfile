@@ -1,7 +1,5 @@
 FROM python:3.8-slim-buster as build
 
-
-
 WORKDIR /usr/src/app
 
 COPY requirements.txt ./
