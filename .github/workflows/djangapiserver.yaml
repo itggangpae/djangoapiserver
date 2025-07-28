@@ -10,6 +10,11 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  AWS_REGION: ap-northeast-2
+  ECR_REPOSITORY: apiserver
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,3 +43,13 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
+      
+      - name: Build Tag and Push Image to Amazon ECR
+        id: build-Image
+        env:
+          ECR_REPOSITORY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
