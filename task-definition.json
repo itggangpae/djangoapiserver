@@ -2,7 +2,7 @@
     "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:208060188195:task-definition/nginxtask:4",
     "containerDefinitions": [
         {
-            "name": "itstudy",
+            "name": "nginx",
             "cpu": 0,
             "portMappings": [
                 {

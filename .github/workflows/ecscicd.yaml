@@ -16,7 +16,7 @@ env:
   ECS_CLUSTER: deploytest
   ECS_SERVICE: itstudyservice
   ECS_TASK_DEFINIFION: ./task-definition.json
-  CONTAINER_NAME: itstudy
+  CONTAINER_NAME: nginx
 
 jobs:
   build:
