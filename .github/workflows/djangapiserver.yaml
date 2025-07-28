@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: ["master"]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,38 +28,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
+      - name: Build Docker Compose
+        run: docker-compose
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: build and release to DockerHub
-        env:
-          NAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          REPO: djangoapiserver
-        run: |
-          docker build -t $REPO .
-          docker tag $REPO:latest $NAME/$REPO:latest
-          docker push $NAME/$REPO:latest
-
-      - name: Decode SSH Key
-        run: |
-          echo "${{ secrets.EC2_KEY }}" | base64 -d > ec2-key.pem
-          chmod 600 ec2-key.pem
-      
-      - name: Connect to EC2 and Deployment
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ec2-key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            if [ "$(docker ps -a -q -f name=^/djangoapiserver)" ]; then
-              echo "컨테이너 있음"
-              docker stop djangoapiserver
-              docker rmi ggnagpae1/djangoapiserver
-            else
-              echo "컨테이너 없음"
-            fi
-
-            docker run --name djangoapiserver -d -p 80:80 --rm ggnagpae1/djangoapiserver
-          EOF
-
-      
+          role-to-assums: arn:aws:iam::208060188195:role/apiserverrole
+          role-session-name: sampleSessionName
+          aws-region: ap-northeast-2
